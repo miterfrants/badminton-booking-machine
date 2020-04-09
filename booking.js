@@ -42,16 +42,23 @@ class FetchMachine {
     respHandler (error, meta, body) {
         if (body.toString().indexOf('員身分證字號') !== -1) {
             console.log('請輸入正確的 Session Id');
+            this.stopFlag[meta.fetchUrl] = true;
         } else {
             // extract redirect url
             const redirectUrl = extractRedirectUrlFromHTML(body.toString());
-            const orderNumber = Number(getQueryString(redirectUrl, 'Y'));
-            if (orderNumber !== 0) {
+            const mode = getQueryString(redirectUrl, 'module');
+            const orderNumber = mode !== 'ind' ? Number(getQueryString(redirectUrl, 'Y')) : 0;
+            if (mode === 'ind') {
+                console.log('系統停機中');
+                this.stopFlag[meta.finalUrl] = true
+            } else if (mode === 'net_booking' && orderNumber !== 0) {
                 console.log('搶到場地囉!');
                 this.stopFlag[meta.finalUrl] = true;
-            } else if (getQueryString(redirectUrl, 'X') === '2') {
+            } else if (mode === 'net_booking' && getQueryString(redirectUrl, 'X') === '2') {
                 console.log('被搶走囉！');
                 this.stopFlag[meta.finalUrl] = true;
+            } else {
+                console.log(body.toString());
             }
         }
     }
