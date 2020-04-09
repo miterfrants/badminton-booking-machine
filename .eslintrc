@@ -1,0 +1,28 @@
+{
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly",
+        "require": "readonly",
+        "process": "readonly",
+        "$": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "root": true,
+    "rules": {
+        "indent": [2, 4],
+        "semi": [
+            "error",
+            "always"
+        ]
+    },
+    "env": {
+        "es6": false,
+        "browser": true,
+        "commonjs": true,
+        "node": false,
+        "jquery": true
+    }
+}
