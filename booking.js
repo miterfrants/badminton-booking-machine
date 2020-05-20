@@ -35,7 +35,11 @@ class FetchMachine {
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:76.0) Gecko/20100101 Firefox/76.0'
               }
             }, (error, meta, body) => {
-                instance.respHandler.call(instance, error, meta, body);
+                try {
+                    instance.respHandler.call(instance, error, meta, body);
+                } catch (e) {
+                    console.error(e);
+                }
             });
         } catch (e) {
             console.error(e);
