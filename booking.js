@@ -27,12 +27,19 @@ class FetchMachine {
             console.log(`網址中的場地被搶走囉 ${url}`);
             return;
         }
-        const instance = this;
-        fetchUrl(url, {
-            cookies: [`ASP.NET_SessionId=${process.env.sessionId}`]
-        }, (error, meta, body) => {
-            instance.respHandler.call(instance, error, meta, body);
-        });
+        try {
+            const instance = this;
+            fetchUrl(url, {
+              cookies: [`ASP.NET_SessionId=${process.env.sessionId}`],
+              headers: {
+                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:76.0) Gecko/20100101 Firefox/76.0'
+              }
+            }, (error, meta, body) => {
+                instance.respHandler.call(instance, error, meta, body);
+            });
+        } catch (e) {
+            console.error(e);
+        }
 
         setTimeout(() => {
             this.fetchLoop(url);
