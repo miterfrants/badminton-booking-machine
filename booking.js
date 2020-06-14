@@ -1,5 +1,6 @@
 const fs = require('fs');
 const cron = require('node-cron');
+const moment = require('moment');
 const Web = require('./tools/web.js');
 const FetchMachine = require('./tools/fetch-machine.js');
 const urlRawData = fs.readFileSync('./config/urls.json');
@@ -8,7 +9,9 @@ const secretsRawData = fs.readFileSync('./config/secrets.json');
 const urls = JSON.parse(urlRawData);
 const secrets = JSON.parse(secretsRawData);
 
-fs.writeFileSync('./dist/log.txt');
+if (!fs.existsSync('./dist/log.txt')) {
+    fs.writeFileSync('./dist/log.txt');
+}
 
 cron.schedule('50 59 23 * * 1-3', async () => {
     try {
@@ -16,7 +19,10 @@ cron.schedule('50 59 23 * * 1-3', async () => {
         fs.appendFileSync('./dist/log.txt', sessionId);
         console.log(`sessionId: ${sessionId}`);
         const fetchMachine = new FetchMachine(urls, 500, sessionId, secrets.sendgridApiKey);
-        fetchMachine.run();        
+        const shortDateString = moment().add(14,'days').toISOString().split('T')[0].split('-').join('/');
+        fetchMachine.run({
+            date: shortDateString
+        });        
     } catch (error) {
         fs.appendFileSync('./dist/log.txt', JSON.stringify(error));
     }

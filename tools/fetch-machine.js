@@ -13,9 +13,14 @@ class FetchMachine {
         }
     }
 
-    run () {
+    run (vars) {
         for (let i = 0; i < this.urls.length; i++) {
-            const url = this.urls[i];
+            let url = this.urls[i];
+            if(vars){
+                for(let key in vars)  {
+                    url = url.replace(`{${key}}`, vars[key]);
+                }
+            }
             this.fetchLoop(url);
         }
     }

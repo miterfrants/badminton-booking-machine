@@ -3,6 +3,12 @@ const gm = require('gm');
 const tesseract = require("node-tesseract-ocr");
 
 const Util = {
+    getShortDateString: (datetime) =>{
+        if(!datetime){
+            datetime = new Date();
+        }
+        return `${datetime.getFullYear()}/${datetime.getMonth()+1}/${datetime.getDate()}`;
+    },
     fetchAsync: (url, options, cb) => {
         const promise = new Promise((resolve, reject) => { //eslint-disable-line
             fetch(url, {
