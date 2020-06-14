@@ -9,8 +9,11 @@ const secretsRawData = fs.readFileSync('./config/secrets.json');
 const urls = JSON.parse(urlRawData);
 const secrets = JSON.parse(secretsRawData);
 
+if (!fs.existsSync('./dist')) {
+    fs.mkdirSync('./dist');
+}
 if (!fs.existsSync('./dist/log.txt')) {
-    fs.writeFileSync('./dist/log.txt');
+    fs.writeFileSync('./dist/log.txt', '');
 }
 
 cron.schedule('50 59 23 * * 1-3', async () => {
@@ -20,6 +23,7 @@ cron.schedule('50 59 23 * * 1-3', async () => {
         console.log(`sessionId: ${sessionId}`);
         const fetchMachine = new FetchMachine(urls, 500, sessionId, secrets.sendgridApiKey);
         const shortDateString = moment().add(14,'days').toISOString().split('T')[0].split('-').join('/');
+	console.log(shortDateString);
         fetchMachine.run({
             date: shortDateString
         });        
