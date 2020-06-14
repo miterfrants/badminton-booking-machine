@@ -53,6 +53,7 @@ class FetchMachine {
             const redirectUrl = Util.extractRedirectUrlFromHTML(body);
             const orderNumber = Number(Util.getQueryString(redirectUrl, 'Y'));
             if (orderNumber !== 0) {
+                fs.appendFileSync('../dist/log.txt', '搶到場地囉');
                 console.log('搶到場地囉!');
                 const msg = {
                     to: 'miterfrants@gmail.com',
@@ -63,6 +64,7 @@ class FetchMachine {
                 sgMail.send(msg);
                 this.stopFlag[originalUrl] = true;
             } else if (Util.getQueryString(redirectUrl, 'X') === '2') {
+                fs.appendFileSync('../dist/log.txt', '被搶走囉！');
                 console.log('被搶走囉！');
 		fs.appendFileSync('../dist/log.txt', '被搶走囉!');
                 this.stopFlag[originalUrl] = true;
