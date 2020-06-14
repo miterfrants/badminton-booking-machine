@@ -12,8 +12,10 @@ if (!fs.existsSync('./dist/log.txt')) {
     fs.writeFileSync('./dist/log.txt', '');
 }
 
-cron.schedule('55 59 15 * * *', async () => {
+cron.schedule('55 59 15 * * *', async ()=> {
+//(async () => {
     try {
+	fs.appendFileSync('./dist/log.txt','start\r\n');
         const urlRawData = fs.readFileSync('./config/urls.json');
         const secretsRawData = fs.readFileSync('./config/secrets.json');
         
@@ -27,16 +29,17 @@ cron.schedule('55 59 15 * * *', async () => {
         }
 
         const sessionId =  await Web.login(secrets.id,secrets.pwd);
-        fs.appendFileSync('./dist/log.txt', sessionId);
+        fs.appendFileSync('./dist/log.txt', sessionId + '\r\n');
         console.log(`sessionId: ${sessionId}`);
-        const fetchMachine = new FetchMachine(urls[now.day().toString()], 500, sessionId, secrets.sendgridApiKey);
+        const fetchMachine = new FetchMachine(urls[now.day().toString()], 1000, sessionId, secrets.sendgridApiKey);
         
         fetchMachine.run({
             date: shortDateString,
             dayIndex: now.day()
         });
     } catch (error) {
-	    console.log(error);
-        fs.appendFileSync('./dist/log.txt', JSON.stringify(error));
+	console.log(error);
+        fs.appendFileSync('./dist/log.txt', JSON.stringify(error)+'\r\n');
     }
+//})();
 });

@@ -1,5 +1,6 @@
 const Util = require('./util.js');
 const sgMail = require('@sendgrid/mail');
+const fs = require('fs');
 
 class FetchMachine {
     constructor (urls, frequency, sessionId, sendgridApiKey) {
@@ -63,6 +64,7 @@ class FetchMachine {
                 this.stopFlag[originalUrl] = true;
             } else if (Util.getQueryString(redirectUrl, 'X') === '2') {
                 console.log('被搶走囉！');
+		fs.appendFileSync('../dist/log.txt', '被搶走囉!');
                 this.stopFlag[originalUrl] = true;
             } else {
                 console.log('unknow error');
