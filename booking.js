@@ -16,18 +16,18 @@ if (!fs.existsSync('./dist/log.txt')) {
     fs.writeFileSync('./dist/log.txt', '');
 }
 
-cron.schedule('50 59 23 * * 1-3', async () => {
+cron.schedule('55 59 15 * * *', async () => {
     try {
         const sessionId =  await Web.login(secrets.id,secrets.pwd);
         fs.appendFileSync('./dist/log.txt', sessionId);
         console.log(`sessionId: ${sessionId}`);
         const fetchMachine = new FetchMachine(urls, 500, sessionId, secrets.sendgridApiKey);
         const shortDateString = moment().add(14,'days').toISOString().split('T')[0].split('-').join('/');
-	console.log(shortDateString);
         fetchMachine.run({
             date: shortDateString
         });        
     } catch (error) {
+	    console.log(error);
         fs.appendFileSync('./dist/log.txt', JSON.stringify(error));
     }
 });
