@@ -9,7 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fetch": "^1.1.0"
+    "@sendgrid/mail": "^7.2.0",
+    "form-data": "^3.0.0",
+    "gm": "^1.23.1",
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.0",
+    "node-tesseract-ocr": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
