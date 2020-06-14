@@ -28,7 +28,7 @@ class FetchMachine {
 
     fetchLoop (url) {
         if (this.stopFlag[url]) {
-            console.log(`網址中的場地被搶走囉 ${url}`);
+            Util.log(`網址中的場地被搶走囉 ${url}`);
             return;
         }
         const instance = this;
@@ -48,13 +48,12 @@ class FetchMachine {
     async respHandler (resp, originalUrl) {
         const body = await resp.text();
         if (body.indexOf('員身分證字號') !== -1) {
-            console.log('請輸入正確的 Session Id');
+            Util.log('請輸入正確的 Session Id');
         } else {
             const redirectUrl = Util.extractRedirectUrlFromHTML(body);
             const orderNumber = Number(Util.getQueryString(redirectUrl, 'Y'));
             if (orderNumber !== 0) {
-                fs.appendFileSync('../dist/log.txt', '搶到場地囉');
-                console.log('搶到場地囉!');
+                Util.log('搶到場地囉!');
                 const msg = {
                     to: 'miterfrants@gmail.com',
                     from: 'auto@io.com',
@@ -64,12 +63,10 @@ class FetchMachine {
                 sgMail.send(msg);
                 this.stopFlag[originalUrl] = true;
             } else if (Util.getQueryString(redirectUrl, 'X') === '2') {
-                fs.appendFileSync('../dist/log.txt', '被搶走囉！');
-                console.log('被搶走囉！');
-		fs.appendFileSync('../dist/log.txt', '被搶走囉!');
+                Util.log('被搶走囉！');
                 this.stopFlag[originalUrl] = true;
             } else {
-                console.log('unknow error');
+                Util.log(`unknow error: ${originalUrl}`);
             }
         }
     }

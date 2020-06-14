@@ -2,6 +2,7 @@ const fs = require('fs');
 const cron = require('node-cron');
 const moment = require('moment');
 const Web = require('./tools/web.js');
+const Util = require('./tools/util.js');
 const FetchMachine = require('./tools/fetch-machine.js');
 
 
@@ -12,10 +13,15 @@ if (!fs.existsSync('./dist/log.txt')) {
     fs.writeFileSync('./dist/log.txt', '');
 }
 
-cron.schedule('55 59 15 * * *', async ()=> {
-//(async () => {
+if (process.env.runWithoutCron === 'true') {
+    main();
+} else {
+    cron.schedule('55 59 15 * * *', main);
+}
+
+async function main(){
     try {
-	fs.appendFileSync('./dist/log.txt','start\r\n');
+        fs.appendFileSync('./dist/log.txt','start\r\n');
         const urlRawData = fs.readFileSync('./config/urls.json');
         const secretsRawData = fs.readFileSync('./config/secrets.json');
         
@@ -29,8 +35,7 @@ cron.schedule('55 59 15 * * *', async ()=> {
         }
 
         const sessionId =  await Web.login(secrets.id,secrets.pwd);
-        fs.appendFileSync('./dist/log.txt', sessionId + '\r\n');
-        console.log(`sessionId: ${sessionId}`);
+        Util.log(`sessionId: ${sessionId}`);
         const fetchMachine = new FetchMachine(urls[now.day().toString()], 1000, sessionId, secrets.sendgridApiKey);
         
         fetchMachine.run({
@@ -38,8 +43,6 @@ cron.schedule('55 59 15 * * *', async ()=> {
             dayIndex: now.day()
         });
     } catch (error) {
-	console.log(error);
-        fs.appendFileSync('./dist/log.txt', JSON.stringify(error)+'\r\n');
+	    Util.log(`sessionId: ${JSON.stringify(error)}`);
     }
-//})();
-});
+}

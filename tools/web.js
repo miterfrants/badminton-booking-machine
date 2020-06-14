@@ -33,9 +33,11 @@ const Web = {
         });
         var loginStatus = (await respLogin.text()).split(',');
         if (loginStatus[0] == 2) {
+            Util.log(loginStatus[1]);
             throw Error(loginStatus[1]);
         }
         if (loginStatus[0] == 1) {
+            Util.log('帳號或密碼錯誤');
             throw Error('帳號或密碼錯誤');
         }
         return sessionId;

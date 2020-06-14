@@ -1,8 +1,22 @@
 const fetch = require('node-fetch');
 const gm = require('gm');
+const fs = require('fs');
 const tesseract = require("node-tesseract-ocr");
 
 const Util = {
+    log: (message)=>{
+        if(process.env.debug==='true') {
+            if(!fs.existsSync('../dist')){
+                fs.mkdirSync('../dist');
+            }
+            if(!fs.existsSync('../dist/log.txt')) {
+                fs.writeFileSync('../dist/log.txt');
+            }
+            fs.appendFileSync('../dist/log.txt', `${message}\r\n`);
+            console.log(message);
+        }
+        
+    },
     getShortDateString: (datetime) =>{
         if(!datetime){
             datetime = new Date();
